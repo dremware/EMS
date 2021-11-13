@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>快件e栈用户注册</title>
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+</head>
+<body style="">
+<section class="aui-flexView">
+    <header class="aui-navBar aui-navBar-fixed">
+        <a href="javascript:;" class="aui-navBar-item">
+
+        </a>
+        <div class="aui-center">
+            <span class="aui-center-title"></span>
+        </div>
+    </header>
+    <section class="aui-scrollView">
+        <div class="aui-ver-head">
+            <img src="images/head.png" alt="">
+        </div>
+        <div class="aui-ver-form"><img class="logo" src="images/logo.png">
+            <div class="aui-flex">
+                <div class="aui-flex-box">
+                    <i class="icon icon-phone"></i>
+                    <input id="username" type="text" autocomplete="off" required placeholder="用户名">
+                </div>
+            </div>
+            <div class="aui-flex">
+                <div class="aui-flex-box">
+                    <i class="icon icon-phone"></i>
+                    <input id="userphone" type="text" autocomplete="off" required placeholder="手机号码">
+                </div>
+            </div>
+            <div class="aui-flex">
+                <div class="aui-flex-box">
+                    <i class="icon icon-phone"></i>
+                    <input id="idcard" type="text" autocomplete="off" required placeholder="身份证号码">
+                </div>
+            </div>
+            <div class="aui-flex">
+                <div class="aui-flex-box">
+                    <i class="icon icon-phone"></i>
+                    <input id="password" type="password" autocomplete="off" required placeholder="密码">
+                </div>
+            </div>
+            <td class="text-right">选择角色</td><td class="content_right"><input type="radio" name="role" class="status" value="1">用户  <input name="role" type="radio" class="status" value="0">快递员</td>
+
+            <div class="aui-ver-button">
+                <button id="register">注册</button>
+            </div>
+            <div class="aui-cell-box">
+                <label class="cell-right">
+                    <input type="checkbox" value="1" name="checkbox" checked="checked">
+                    <i class="cell-checkbox-icon"></i>
+                    <em>同意快递e栈注册协议</em>
+                </label>
+            </div>
+        </div>
+    </section>
+</section>
+</body>
+<script src="js/jquery.min.js"></script>
+<script src="layer/layer.js"></script>
+<script type="text/javascript">
+    var phoneReg = /(^1[3|4|5|7|8]\d{9}$)|(^09\d{8}$)/;
+    $(function () {
+        $("#register").click(function () {
+            if(!$(":checkbox").prop("checked")){
+                layer.msg("未勾选协议,无法注册!");
+                return;
+            }
+            var userphone = $.trim($('#userphone').val());
+            var username = $.trim($('#username').val());
+            var idcard = $.trim($('#idcard').val());
+            var password = $.trim($('#password').val());
+            var role = $(".status:checked").val();
+            var windowId = layer.load();
+            $.post("/wx/user/register.do", {
+                role:role,
+                userphone:userphone,
+                username:username,
+                idcard:idcard,
+                password:password
+            }, function (data) {
+                // 关闭load窗口
+                layer.close(windowId);
+                // 将服务器回复的结果进行显示
+                layer.msg(data.result);
+                console.log(data.status)
+                // 无论是用户还是快递员注册成功都进行页面跳转
+                if (data.status == 0 || data.status == 1) {
+                    // 跳转到主页
+                    location.assign("index.html");
+                }
+            }, "JSON");
+        });
+    });
+</script>
+</html>
